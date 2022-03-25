@@ -4,8 +4,15 @@ import axios from "axios";
 import styled from "styled-components";
 
 import Marker from "./Marker";
+import Indices from "./Indices";
 
-import { listPoint3DToPoint2D,msgViewSnapShot, msgSetToolbarItems } from "./daxiangyun.js";
+import {
+  listPoint3DToPoint2D,
+  msgViewSnapShot,
+  msgSetToolbarItems,
+} from "./daxiangyun.js";
+
+import { calcPoint, updateListPoint2D } from "./util";
 
 const Iframe = styled.iframe`
   width: 100%;
@@ -21,37 +28,29 @@ const config = {
 const url =
   "https://dk9jriox19.execute-api.ap-southeast-1.amazonaws.com/Prod/organization/13/applications/organization-13-application-9kysvkvde/devices?maxResults=10&nextToken=";
 
-const calcPoint = (lon, lat, alt, modelBbox, siteGps) => {
-  const site = JSON.parse(siteGps);
-  // console.log(site)
-  const siteXDist = site.maxX - site.minX;
-  const siteYDist = site.maxY - site.minY;
-  const siteZDist = site.maxZ - site.minZ;
-  const [pointX, pointY, pointZ] = [
-    ((lon - site.minX) / siteXDist) * (modelBbox[3] - modelBbox[0]) + modelBbox[0],
-    ((lat - site.minY) / siteYDist) * (modelBbox[4] - modelBbox[1]) + modelBbox[1],
-    ((alt - (site.minZ + process.env.REACT_APP_ELEVATION)) / siteZDist) *
-      (modelBbox[5] - modelBbox[2]) +
-      modelBbox[2],
-  ];
-  return [pointX, pointY, pointZ];
+const tmp = {
+  "NS500-WLS": "漏水感知器",
+  "NS330-PSU": "智能插座",
+  "NS300-EA9": "綜合感知器",
+  "NS330-AIO": "人數感知器",
+  "NS500-MC": "磁簧感知器",
 };
 
-const updateListPoint2D = (pointData, list, fn, display = true) => {
-  if (display) {
-    for (let data of list) {
-      if (pointData.point.toString() === data.point.toString()) {
-        const [left, top] = pointData.result;
-        data["left"] = left;
-        data["top"] = top;
-      }
+const devicesRename = (name) => {
+  let newName = "";
+
+  Object.keys(tmp).forEach((devicesName) => {
+    // console.log(devicesName);
+    if (name.includes(devicesName)) {
+      newName = tmp[devicesName];
     }
-    fn([...list]);
-  }
+  });
+
+  return newName;
 };
 
 const App = () => {
-  const [MarkerList, setMarkerList] = useState([]);
+  const [dataList, setDataList] = useState([]);
   const [modelBbox, setModelBbox] = useState([]);
   const iframeRef = useRef();
 
@@ -61,21 +60,29 @@ const App = () => {
       .get(url, config)
       .then((res) => {
         const tmpData = res.data.data.map((object, i) => {
+          // console.log(object);
           let lon = object.metadata.attributes.longitude
             ? object.metadata.attributes.longitude
             : 121.569014;
           let lat = object.metadata.attributes.latitude
             ? object.metadata.attributes.latitude
             : 25.050234;
-          let alt = 20;
+          let alt = process.env.REACT_APP_ELEVATION;
           // console.log(lon, lat ,alt)
           return {
             ...object,
             shadow: JSON.parse(object["shadow"]),
-            point: calcPoint(lon, lat ,alt, modelBbox, process.env.REACT_APP_SITE_GPS),
+            point: calcPoint(
+              lon,
+              lat,
+              alt,
+              modelBbox,
+              process.env.REACT_APP_SITE_GPS
+            ),
+            newName: devicesRename(object.deviceProfileName),
           };
         });
-        setMarkerList(tmpData);
+        setDataList(tmpData);
       })
       .catch((err) => console.log(err));
   }, [modelBbox]);
@@ -87,7 +94,7 @@ const App = () => {
 
     try {
       const obj = typeof e.data === "object" ? e.data : JSON.parse(e.data);
-      console.log(obj);
+      // console.log(obj);
       switch (obj.type) {
         case "MSG_ENTITY_SELECTED":
           // console.log(obj.data.selectionIds[0]);
@@ -96,20 +103,21 @@ const App = () => {
           //console.log('模型加載完成');
           //不顯示工具列
           msgSetToolbarItems(iframeRef, []);
-          // 設定模型bbox
-          console.log(obj.data);
+          //設定模型bbox
           setModelBbox(obj.data.bbox);
-          // 初始化marker經緯度to大象雲座標
-          console.log(JSON.parse(process.env.REACT_APP_DEFAULT_VIEW_SNAPSHOT_NEW))
-          msgViewSnapShot(iframeRef,JSON.parse(process.env.REACT_APP_DEFAULT_VIEW_SNAPSHOT_NEW ))
+          //將模型轉至指定視角
+          msgViewSnapShot(
+            iframeRef,
+            JSON.parse(process.env.REACT_APP_DEFAULT_VIEW_SNAPSHOT_NEW)
+          );
           break;
         case "MSG_MODEL_TREE_READY":
           break;
         case "MSG_RETURN_PROJECTED_POINT":
-          updateListPoint2D(obj.data, MarkerList, setMarkerList); //更新二維點
+          updateListPoint2D(obj.data, dataList, setDataList); //更新二維點
           break;
         case "MSG_CAMERA_CHANGE":
-          listPoint3DToPoint2D(iframeRef, MarkerList); //模型轉動，三維轉二維
+          listPoint3DToPoint2D(iframeRef, dataList); //模型轉動，三維轉二維
           break;
         default:
           break;
@@ -134,12 +142,13 @@ const App = () => {
 
   return (
     <>
-      {console.log(MarkerList)}
+      {/* {console.log(MarkerList)} */}
       <Iframe
         ref={iframeRef}
         src={`${process.env.REACT_APP_VIEWER_SERVER_HOST}/viewer.html?path=${process.env.REACT_APP_MODEL_PATH}&language=zh-TW`}
       />
-      <Marker MarkerList={MarkerList} />
+      <Marker MarkerList={dataList} />
+      <Indices IndicesList={dataList}/>
     </>
   );
 };

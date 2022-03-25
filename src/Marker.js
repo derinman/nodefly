@@ -8,7 +8,7 @@ const MarkerWrapper = styled.div`
   top: 0;
   left: 0;
   height: 0%;
-  width: 100%;
+  width: 0%;
   //border: 1px solid #000;
 `;
 
@@ -22,8 +22,6 @@ const MarkerItem = styled.div`
   opacity: 0.5;
   z-index: 20;
   &:hover {
-    width: 8px;
-    height: 8px;
     opacity: 1;
     z-index: 10;
   }
@@ -35,7 +33,7 @@ const MarkerItem = styled.div`
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    height: 20rem;
+    height: 5rem;
   }
 
   .statusLight {
@@ -43,12 +41,13 @@ const MarkerItem = styled.div`
     cursor: pointer;
     user-select: none;
     position: relative;
-    background-color: red;
-    padding: 0.3rem 0.6rem;
+    background-color: blue;
+    color:#fff;
+    padding: 0.5rem 1rem;
     border-radius: 1rem;
     white-space: nowrap;
     &:hover {
-      border: 2px #ffffff solid;
+      // border: 2px #ffffff solid;
     }
   }
 
@@ -61,8 +60,11 @@ const MarkerItem = styled.div`
   }
 `;
 
+
+
 const Marker = (props) => {
   const { MarkerList } = props;
+
   // console.log(memberMarkerList);
   return (
     <MarkerWrapper>
@@ -79,15 +81,15 @@ const Marker = (props) => {
           >
             <div className="status">
               <div className="unSelectable statusLight">
-                {data.deviceProfileName}
+                {data.newName}
               </div>
-              <div>
+              {/* <div>
                 {Object.entries(data.shadow.state.reported.reportData).map(
                   (data, i) => (
                     <div key={i}>{`${data[0]}: ${data[1]}`}</div>
                   )
                 )}
-              </div>
+              </div> */}
               <div className="unSelectable line" />
             </div>
           </MarkerItem>
