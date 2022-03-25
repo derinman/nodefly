@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import Marker from "./Marker";
 
-import { listPoint3DToPoint2D, msgSetToolbarItems } from "./daxiangyun.js";
+import { listPoint3DToPoint2D,msgViewSnapShot, msgSetToolbarItems } from "./daxiangyun.js";
 
 const Iframe = styled.iframe`
   width: 100%;
@@ -56,7 +56,7 @@ const App = () => {
   const iframeRef = useRef();
 
   useEffect(() => {
-    if (!modelBbox) return;
+    // if (!modelBbox) return;
     axios
       .get(url, config)
       .then((res) => {
@@ -87,7 +87,7 @@ const App = () => {
 
     try {
       const obj = typeof e.data === "object" ? e.data : JSON.parse(e.data);
-      // console.log(obj);
+      console.log(obj);
       switch (obj.type) {
         case "MSG_ENTITY_SELECTED":
           // console.log(obj.data.selectionIds[0]);
@@ -100,7 +100,8 @@ const App = () => {
           console.log(obj.data);
           setModelBbox(obj.data.bbox);
           // 初始化marker經緯度to大象雲座標
-
+          console.log(JSON.parse(process.env.REACT_APP_DEFAULT_VIEW_SNAPSHOT_NEW))
+          msgViewSnapShot(iframeRef,JSON.parse(process.env.REACT_APP_DEFAULT_VIEW_SNAPSHOT_NEW ))
           break;
         case "MSG_MODEL_TREE_READY":
           break;
