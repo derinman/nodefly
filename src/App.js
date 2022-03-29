@@ -12,7 +12,7 @@ import {
   msgSetToolbarItems,
 } from "./daxiangyun.js";
 
-import { calcPoint, updateListPoint2D } from "./util";
+import { calcPoint, updateListPoint2D, renameNameAndData } from "./util";
 
 const Iframe = styled.iframe`
   width: 100%;
@@ -27,25 +27,6 @@ const config = {
 };
 const url =
   "https://dk9jriox19.execute-api.ap-southeast-1.amazonaws.com/Prod/organization/13/applications/organization-13-application-9kysvkvde/devices?maxResults=10&nextToken=";
-
-const tmp = {
-  "NS500-WLS": "漏水感知器",
-  "NS330-PSU": "智能插座",
-  "NS300-EA9": "綜合感知器",
-  "NS330-AIO": "人數感知器",
-  "NS500-MC": "磁簧感知器",
-};
-
-const devicesRename = (name) => {
-  let newName = "";
-  Object.keys(tmp).forEach((devicesName) => {
-    // console.log(devicesName);
-    if (name.includes(devicesName)) {
-      newName = tmp[devicesName];
-    }
-  });
-  return newName;
-};
 
 const App = () => {
   const [dataList, setDataList] = useState([]);
@@ -66,7 +47,7 @@ const App = () => {
             : 25.050234;
           let alt = 28;
           return {
-            ...object,
+            // ...object,
             shadow: JSON.parse(object["shadow"]),
             point: calcPoint(
               lon,
@@ -75,7 +56,7 @@ const App = () => {
               modelBbox,
               process.env.REACT_APP_SITE_GPS
             ),
-            newName: devicesRename(object.deviceProfileName),
+            newNameAndData: renameNameAndData(object),
           };
         });
         setDataList([...tmpData]);
@@ -86,11 +67,11 @@ const App = () => {
 
   useEffect(() => {
     fetchData();
-    let interval = setInterval(() => {
-      fetchData();
-      console.log("t");
-    }, 1000 * 15);
-    return () => clearInterval(interval);
+    // let interval = setInterval(() => {
+    //   fetchData();
+    //   console.log("t");
+    // }, 1000 * 15);
+    // return () => clearInterval(interval);
   }, [modelBbox]);
 
   const onMessageReceivedFromIframe = (e) => {

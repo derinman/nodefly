@@ -18,9 +18,13 @@ const Indices = (props) => {
   return (
     <Wrapper>
       {IndicesList.map((data, i) => (
-        <div key={data.newName}>
-          <div>{data.newName}</div>
+        <div key={i}>
+          <div>{data.newNameAndData['name']}</div>
+          <div>oldReportData:</div>
           {<div>{JSON.stringify(data.shadow.state.reported.reportData)}</div>}
+          <div>newReportData:</div>
+          {<div>{JSON.stringify(data.newNameAndData.data)}</div>}
+          
           <br />
         </div>
       ))}

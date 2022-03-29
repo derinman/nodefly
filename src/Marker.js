@@ -77,7 +77,7 @@ const Marker = (props) => {
           >
             <div className="status">
               <div className="unSelectable statusLight">
-                {data.newName}
+                {data.newNameAndData['name']}
               </div>
               {/* <div>
                 {Object.entries(data.shadow.state.reported.reportData).map(
