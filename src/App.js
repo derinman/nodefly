@@ -7,7 +7,7 @@ import Marker from "./Marker";
 import Indices from "./Indices";
 
 import {
-  listPoint3DToPoint2D,
+  onCamChange,
   msgViewSnapShot,
   msgSetToolbarItems,
 } from "./daxiangyun.js";
@@ -38,14 +38,12 @@ const tmp = {
 
 const devicesRename = (name) => {
   let newName = "";
-
   Object.keys(tmp).forEach((devicesName) => {
     // console.log(devicesName);
     if (name.includes(devicesName)) {
       newName = tmp[devicesName];
     }
   });
-
   return newName;
 };
 
@@ -54,12 +52,11 @@ const App = () => {
   const [modelBbox, setModelBbox] = useState([]);
   const iframeRef = useRef();
 
-  useEffect(() => {
-    // if (!modelBbox) return;
+  const fetchData = () => {
     axios
       .get(url, config)
       .then((res) => {
-        const tmpData = res.data.data.map((object, i) => {
+        let tmpData = res.data.data.map((object) => {
           // console.log(object);
           let lon = object.metadata.attributes.longitude
             ? object.metadata.attributes.longitude
@@ -67,8 +64,7 @@ const App = () => {
           let lat = object.metadata.attributes.latitude
             ? object.metadata.attributes.latitude
             : 25.050234;
-          let alt = process.env.REACT_APP_ELEVATION;
-          // console.log(lon, lat ,alt)
+          let alt = 28;
           return {
             ...object,
             shadow: JSON.parse(object["shadow"]),
@@ -82,25 +78,29 @@ const App = () => {
             newName: devicesRename(object.deviceProfileName),
           };
         });
-        setDataList(tmpData);
+        setDataList([...tmpData]);
+        onCamChange(iframeRef, [...tmpData]);
       })
       .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    fetchData();
+    let interval = setInterval(() => {
+      fetchData();
+      console.log("t");
+    }, 1000 * 15);
+    return () => clearInterval(interval);
   }, [modelBbox]);
 
   const onMessageReceivedFromIframe = (e) => {
     if (e.origin !== process.env.REACT_APP_VIEWER_SERVER_HOST) return;
-    //console.log(typeof (e.data) === 'string' ? console.log((JSON.parse(e.data)).type) : e.data)
-    //console.log(e.data);
-
     try {
-      const obj = typeof e.data === "object" ? e.data : JSON.parse(e.data);
-      // console.log(obj);
+      const obj = JSON.parse(e.data);
       switch (obj.type) {
         case "MSG_ENTITY_SELECTED":
-          // console.log(obj.data.selectionIds[0]);
           break;
         case "MSG_MODEL_READY":
-          //console.log('模型加載完成');
           //不顯示工具列
           msgSetToolbarItems(iframeRef, []);
           //設定模型bbox
@@ -114,10 +114,12 @@ const App = () => {
         case "MSG_MODEL_TREE_READY":
           break;
         case "MSG_RETURN_PROJECTED_POINT":
+          // console.log('topleft')
           updateListPoint2D(obj.data, dataList, setDataList); //更新二維點
+          // console.log(dataList)
           break;
         case "MSG_CAMERA_CHANGE":
-          listPoint3DToPoint2D(iframeRef, dataList); //模型轉動，三維轉二維
+          onCamChange(iframeRef, dataList); //模型轉動，三維轉二維
           break;
         default:
           break;
@@ -142,13 +144,12 @@ const App = () => {
 
   return (
     <>
-      {/* {console.log(MarkerList)} */}
       <Iframe
         ref={iframeRef}
         src={`${process.env.REACT_APP_VIEWER_SERVER_HOST}/viewer.html?path=${process.env.REACT_APP_MODEL_PATH}&language=zh-TW`}
       />
       <Marker MarkerList={dataList} />
-      <Indices IndicesList={dataList}/>
+      <Indices IndicesList={dataList} />
     </>
   );
 };

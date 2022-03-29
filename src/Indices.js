@@ -7,13 +7,13 @@ const Wrapper = styled.div`
   height: 80%;
   top: 10%;
   left: 2%;
-  overflow-x:scroll;
+  overflow-x: scroll;
   border: 1px #000 solid;
 `;
 
 const Indices = (props) => {
   const { IndicesList } = props;
-  console.log(IndicesList);
+  // console.log(IndicesList);
 
   return (
     <Wrapper>
@@ -21,7 +21,7 @@ const Indices = (props) => {
         <div key={data.newName}>
           <div>{data.newName}</div>
           {<div>{JSON.stringify(data.shadow.state.reported.reportData)}</div>}
-          <br/>
+          <br />
         </div>
       ))}
     </Wrapper>

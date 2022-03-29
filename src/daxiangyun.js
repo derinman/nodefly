@@ -40,7 +40,7 @@ function msgSetBackgroundColor(iframeWindow,color){
     )
 }
 
-function listPoint3DToPoint2D(iframeWindow, lists){
+function onCamChange(iframeWindow, lists){
   if (lists === null || lists === undefined) return;
   lists.forEach((list) => {
     msgProjectPoint(iframeWindow, list.point);
@@ -104,5 +104,5 @@ export {
   msgTakeSnapShot,
   msgViewSnapShot,
   msgSetToolbarItems,
-  listPoint3DToPoint2D
+  onCamChange,
 }

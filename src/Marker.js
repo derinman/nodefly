@@ -60,16 +60,12 @@ const MarkerItem = styled.div`
   }
 `;
 
-
-
 const Marker = (props) => {
   const { MarkerList } = props;
-
-  // console.log(memberMarkerList);
+  // console.log(MarkerList);
   return (
     <MarkerWrapper>
-      {MarkerList !== [] &&
-        MarkerList.map((data) => (
+        {MarkerList.map((data) => (
           <MarkerItem
             key={uuidV4()}
             className="activeMarker"

@@ -1,15 +1,12 @@
-const updateListPoint2D = (pointData, list, fn, display = true) => {
-  if (display) {
-    for (let data of list) {
-      if (pointData.point.toString() === data.point.toString()) {
-        const [left, top] = pointData.result;
-        data["left"] = left;
-        data["top"] = top;
-      }
+const updateListPoint2D = (pointData, list, fn) => {
+  for (let data of list) {
+    if (pointData.point.toString() === data.point.toString()) {
+      const [left, top] = pointData.result;
+      data["left"] = left;
+      data["top"] = top;
     }
-    fn([...list]);
   }
+  fn([...list]);
 };
 
-
-export default updateListPoint2D
+export default updateListPoint2D;
