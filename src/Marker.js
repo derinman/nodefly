@@ -12,7 +12,7 @@ const MarkerWrapper = styled.div`
   //border: 1px solid #000;
 `;
 
-const MarkerItem = styled.div`
+const MarkerPoint = styled.div`
   pointer-events: none;
   position: absolute;
   width: 5px;
@@ -23,73 +23,84 @@ const MarkerItem = styled.div`
   z-index: 20;
   &:hover {
     opacity: 1;
-    z-index: 10;
+    z-index: 30;
   }
 
-  .status {
-    text-align: center;
-    overflow: hidden;
+  .innerWrapper {
     position: absolute;
-    bottom: 0;
+    height: 8rem;
+    bottom: 0%;
     left: 50%;
     transform: translateX(-50%);
-    height: 5rem;
+    overflow: hidden;
+    // border:1px solid #000;
   }
 
-  .statusLight {
+  .text {
+    position: relative;
     pointer-events: auto;
     cursor: pointer;
     user-select: none;
-    position: relative;
-    background-color: blue;
-    color:#fff;
-    padding: 0.5rem 1rem;
-    border-radius: 1rem;
+    text-align: center;
+    font-size: 1rem;
     white-space: nowrap;
-    &:hover {
-      // border: 2px #ffffff solid;
-    }
   }
 
   .line {
     position: relative;
-    margin: auto;
     width: 1px;
-    height: 15rem;
+    height: 6rem;
+    margin: auto;
     background-color: #000;
   }
 `;
 
 const Marker = (props) => {
   const { MarkerList } = props;
-  // console.log(MarkerList);
+  console.log(MarkerList);
   return (
     <MarkerWrapper>
-        {MarkerList.map((data) => (
-          <MarkerItem
-            key={uuidV4()}
-            className="activeMarker"
-            data-id={data.id}
-            style={{
-              left: data.left,
-              top: data.top,
-            }}
-          >
-            <div className="status">
-              <div className="unSelectable statusLight">
-                {data.newNameAndData['name']}
-              </div>
-              {/* <div>
-                {Object.entries(data.shadow.state.reported.reportData).map(
-                  (data, i) => (
-                    <div key={i}>{`${data[0]}: ${data[1]}`}</div>
-                  )
-                )}
-              </div> */}
-              <div className="unSelectable line" />
+      {MarkerList.map((data) => (
+        <MarkerPoint
+          key={uuidV4()}
+          data-id={data.id}
+          style={{
+            left: data.left,
+            top: data.top,
+          }}
+        >
+          <div className="innerWrapper">
+            <div
+              className="text"
+              style={{
+                backgroundColor: "blue",
+                color: "#fff",
+                padding: "0.5rem 1rem",
+                borderRadius: "1rem",
+              }}
+            >
+              {data.newNameAndData["name"]}
             </div>
-          </MarkerItem>
-        ))}
+            
+            {(data.newNameAndData["name"] !== '綜合感知器')  && 
+            <div
+              className="text"
+              style={{
+                backgroundColor: "#fff",
+                color: "red",
+                border: "1px solid red",
+              }}
+            >
+              {Object.keys(data.newNameAndData["data"]).map((myKey) => (
+                <div>
+                  {myKey}: {JSON.stringify(data.newNameAndData["data"][myKey])}
+                </div>
+              ))}
+            </div>}
+            <div className="line" />
+          </div>
+        </MarkerPoint>
+      ))}
     </MarkerWrapper>
   );
 };

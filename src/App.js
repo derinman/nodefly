@@ -67,11 +67,11 @@ const App = () => {
 
   useEffect(() => {
     fetchData();
-    // let interval = setInterval(() => {
-    //   fetchData();
-    //   console.log("t");
-    // }, 1000 * 15);
-    // return () => clearInterval(interval);
+    let interval = setInterval(() => {
+      fetchData();
+      console.log("t");
+    }, 1000 * 15);
+    return () => clearInterval(interval);
   }, [modelBbox]);
 
   const onMessageReceivedFromIframe = (e) => {
