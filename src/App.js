@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 import Marker from "./Marker";
 import Indices from "./Indices";
+import Inputs from "./Inputs";
 
 import {
   onCamChange,
@@ -31,6 +32,7 @@ const url =
 const App = () => {
   const [dataList, setDataList] = useState([]);
   const [modelBbox, setModelBbox] = useState([]);
+  const [altitude, setAltitude] = useState(26);
   const iframeRef = useRef();
 
   const fetchData = () => {
@@ -45,7 +47,7 @@ const App = () => {
           let lat = object.metadata.attributes.latitude
             ? object.metadata.attributes.latitude
             : 25.050234;
-          let alt = 28;
+          let alt = altitude;
           return {
             // ...object,
             shadow: JSON.parse(object["shadow"]),
@@ -69,10 +71,10 @@ const App = () => {
     fetchData();
     let interval = setInterval(() => {
       fetchData();
-      console.log("t");
+      // console.log("t");
     }, 1000 * 15);
     return () => clearInterval(interval);
-  }, [modelBbox]);
+  }, [modelBbox, altitude]);
 
   const onMessageReceivedFromIframe = (e) => {
     if (e.origin !== process.env.REACT_APP_VIEWER_SERVER_HOST) return;
@@ -129,6 +131,7 @@ const App = () => {
         ref={iframeRef}
         src={`${process.env.REACT_APP_VIEWER_SERVER_HOST}/viewer.html?path=${process.env.REACT_APP_MODEL_PATH}&language=zh-TW`}
       />
+      <Inputs altitude={altitude} setAltitude={setAltitude}/>
       <Marker MarkerList={dataList} />
       <Indices IndicesList={dataList} />
     </>

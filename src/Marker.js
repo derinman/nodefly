@@ -57,7 +57,7 @@ const MarkerPoint = styled.div`
 
 const Marker = (props) => {
   const { MarkerList } = props;
-  console.log(MarkerList);
+  // console.log(MarkerList);
   return (
     <MarkerWrapper>
       {MarkerList.map((data) => (
@@ -81,8 +81,8 @@ const Marker = (props) => {
             >
               {data.newNameAndData["name"]}
             </div>
-            
-            {(data.newNameAndData["name"] !== '綜合感知器')  && 
+
+            {/* {(data.newNameAndData["name"] !== '綜合感知器')  && 
             <div
               className="text"
               style={{
@@ -96,7 +96,20 @@ const Marker = (props) => {
                   {myKey}: {JSON.stringify(data.newNameAndData["data"][myKey])}
                 </div>
               ))}
-            </div>}
+            </div>} */}
+
+            <div
+              className="text"
+              style={{
+                backgroundColor: "#fff",
+                color: "red",
+                border: "1px solid red",
+              }}
+            >
+              {console.log(data)}
+              {data.newNameAndData.timeFmt}
+            </div>
+
             <div className="line" />
           </div>
         </MarkerPoint>

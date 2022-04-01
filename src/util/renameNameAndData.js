@@ -10,9 +10,22 @@ const renameDeviceMap = {
 };
 
 const renameNameAndData = (old) => {
-  let newNameAndData = { name: "", data: {} };
+  let newNameAndData = { name: "", data: {}, timeFmt:"" };
 
   // console.log(old)
+  // console.log(JSON.parse(old.shadow).state.reported.reportData.reportedAt)
+  let timestamp = JSON.parse(old.shadow).state.reported.reportData.reportedAt
+  let myDate = new Date(timestamp);
+  let month = myDate.getMonth()+1;
+  let date = myDate.getDate();
+  let hours = myDate.getHours();
+  let minutes = myDate.getMinutes();
+  let seconds = myDate.getSeconds();
+  // console.log(month, date, hours, minutes,seconds)
+
+  let timeFmt = `${month}月 ${date}日 ${hours}時 ${minutes}分 ${seconds}秒`
+
+  newNameAndData['timeFmt'] = timeFmt
 
   Object.keys(renameDeviceMap).forEach((item) => {
     // console.log(item)
@@ -33,7 +46,7 @@ const renameNameAndData = (old) => {
     }
   });
 
-  console.log(newNameAndData);
+  // console.log(newNameAndData);
   return newNameAndData;
 };
 
