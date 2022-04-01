@@ -55,6 +55,22 @@ const MarkerPoint = styled.div`
   }
 `;
 
+const handleMarkerColor = (data) => {
+  let color = "blue";
+  switch (data.newNameAndData["name"]) {
+    case "漏水感知器":
+      console.log(data.newNameAndData);
+      if (data.newNameAndData.data["漏水狀態"]) {
+        color = "red";
+      }
+      break;
+    default:
+      break;
+  }
+
+  return color;
+};
+
 const Marker = (props) => {
   const { MarkerList } = props;
   // console.log(MarkerList);
@@ -73,7 +89,7 @@ const Marker = (props) => {
             <div
               className="text"
               style={{
-                backgroundColor: "blue",
+                backgroundColor: handleMarkerColor(data),
                 color: "#fff",
                 padding: "0.5rem 1rem",
                 borderRadius: "1rem",
@@ -82,21 +98,23 @@ const Marker = (props) => {
               {data.newNameAndData["name"]}
             </div>
 
-            {(data.newNameAndData["name"] !== '綜合感知器')  && 
-            <div
-              className="text"
-              style={{
-                backgroundColor: "#fff",
-                color: "red",
-                border: "1px solid red",
-              }}
-            >
-              {Object.keys(data.newNameAndData["data"]).map((myKey) => (
-                <div>
-                  {myKey}: {JSON.stringify(data.newNameAndData["data"][myKey])}
-                </div>
-              ))}
-            </div>}
+            {data.newNameAndData["name"] !== "綜合感知器" && (
+              <div
+                className="text"
+                style={{
+                  backgroundColor: "#fff",
+                  color: "red",
+                  border: "1px solid red",
+                }}
+              >
+                {Object.keys(data.newNameAndData["data"]).map((myKey, i) => (
+                  <div key={i}>
+                    {myKey}:{" "}
+                    {JSON.stringify(data.newNameAndData["data"][myKey])}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* <div
               className="text"
