@@ -20,11 +20,12 @@ const Indices = (props) => {
       {IndicesList.map((data, i) => (
         <div key={i}>
           <div>{data.newNameAndData['name']}</div>
-          {/* <div>oldReportData:</div> */}
+          {/* <div>未整理資料:</div> */}
           {/* {<div>{JSON.stringify(data.shadow.state.reported.reportData)}</div>} */}
-          <div>newReportData:</div>
+          <div>資料:</div>
           {<div>{JSON.stringify(data.newNameAndData.data)}</div>}
-          
+          <div>最後紀錄時間:</div>
+          <div>{data.newNameAndData['timeFmt']}</div>
           <br />
         </div>
       ))}

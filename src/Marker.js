@@ -82,7 +82,7 @@ const Marker = (props) => {
               {data.newNameAndData["name"]}
             </div>
 
-            {/* {(data.newNameAndData["name"] !== '綜合感知器')  && 
+            {(data.newNameAndData["name"] !== '綜合感知器')  && 
             <div
               className="text"
               style={{
@@ -96,9 +96,9 @@ const Marker = (props) => {
                   {myKey}: {JSON.stringify(data.newNameAndData["data"][myKey])}
                 </div>
               ))}
-            </div>} */}
+            </div>}
 
-            <div
+            {/* <div
               className="text"
               style={{
                 backgroundColor: "#fff",
@@ -108,7 +108,7 @@ const Marker = (props) => {
             >
               {console.log(data)}
               {data.newNameAndData.timeFmt}
-            </div>
+            </div> */}
 
             <div className="line" />
           </div>
