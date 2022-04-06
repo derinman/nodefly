@@ -131,8 +131,8 @@ const App = () => {
         ref={iframeRef}
         src={`${process.env.REACT_APP_VIEWER_SERVER_HOST}/viewer.html?path=${process.env.REACT_APP_MODEL_PATH}&language=zh-TW`}
       />
-      <Inputs altitude={altitude} setAltitude={setAltitude}/>
-      <Marker MarkerList={dataList} />
+      <Inputs altitude={altitude} setAltitude={setAltitude} />
+      <Marker iframeRef={iframeRef} MarkerList={dataList} />
       <Indices IndicesList={dataList} />
     </>
   );

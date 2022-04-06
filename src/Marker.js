@@ -3,6 +3,8 @@ import { v4 as uuidV4 } from "uuid";
 
 import styled from "styled-components";
 
+import { msgGotoEntity } from "./daxiangyun.js";
+
 const MarkerWrapper = styled.div`
   position: absolute;
   top: 0;
@@ -59,7 +61,7 @@ const handleMarkerColor = (data) => {
   let color = "blue";
   switch (data.newNameAndData["name"]) {
     case "漏水感知器":
-      console.log(data.newNameAndData);
+      // console.log(data.newNameAndData);
       if (data.newNameAndData.data["漏水狀態"]) {
         color = "red";
       }
@@ -72,7 +74,7 @@ const handleMarkerColor = (data) => {
 };
 
 const Marker = (props) => {
-  const { MarkerList } = props;
+  const { iframeRef, MarkerList } = props;
   // console.log(MarkerList);
   return (
     <MarkerWrapper>
@@ -94,6 +96,16 @@ const Marker = (props) => {
                 padding: "0.5rem 1rem",
                 borderRadius: "1rem",
               }}
+              onClick={() =>
+                msgGotoEntity(iframeRef, [
+                  data.point[0] - 1,
+                  data.point[1] - 1,
+                  data.point[2] - 1,
+                  data.point[0] + 1,
+                  data.point[1] + 1,
+                  data.point[2] + 1,
+                ])
+              }
             >
               {data.newNameAndData["name"]}
             </div>
@@ -115,18 +127,6 @@ const Marker = (props) => {
                 ))}
               </div>
             )}
-
-            {/* <div
-              className="text"
-              style={{
-                backgroundColor: "#fff",
-                color: "red",
-                border: "1px solid red",
-              }}
-            >
-              {console.log(data)}
-              {data.newNameAndData.timeFmt}
-            </div> */}
 
             <div className="line" />
           </div>
