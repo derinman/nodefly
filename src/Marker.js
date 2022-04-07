@@ -5,6 +5,8 @@ import styled from "styled-components";
 
 import { msgGotoEntity } from "./daxiangyun.js";
 
+import {handleMarkerColor} from "./util"
+
 const MarkerWrapper = styled.div`
   position: absolute;
   top: 0;
@@ -56,22 +58,6 @@ const MarkerPoint = styled.div`
     background-color: #000;
   }
 `;
-
-const handleMarkerColor = (data) => {
-  let color = "blue";
-  switch (data.newNameAndData["name"]) {
-    case "漏水感知器":
-      // console.log(data.newNameAndData);
-      if (data.newNameAndData.data["漏水狀態"]) {
-        color = "red";
-      }
-      break;
-    default:
-      break;
-  }
-
-  return color;
-};
 
 const Marker = (props) => {
   const { iframeRef, MarkerList } = props;
