@@ -11,7 +11,7 @@ const handleMarkerColor = (data) => {
     case "智能插座":
       //   console.log(data.newNameAndData);
       //   console.log("智能插座");
-      if (data.newNameAndData.data["插座狀態"] === "Close") {
+      if (data.newNameAndData.data["插座狀態"] === "Open") {
         color = "red";
       }
       break;
@@ -31,14 +31,14 @@ const handleMarkerColor = (data) => {
     case "人數感知器":
       // console.log(data.newNameAndData);
       //   console.log("人數感知器");
-      if (!data.newNameAndData.data["現場人數"]) {
+      if (data.newNameAndData.data["現場人數"]) {
         color = "red";
       }
       break;
     case "磁簧感知器":
       //   console.log(data.newNameAndData);
       //   console.log("磁簧感知器");
-      if (data.newNameAndData.data["開門狀態"] === "Close") {
+      if (data.newNameAndData.data["開門狀態"] === "Open") {
         color = "red";
       }
       break;
